@@ -1,6 +1,6 @@
 ---
 name: repo2skill
-description: Convert local code repositories or remote GitHub/GitLab/Gitee repositories into Claude Code Skills with git diff based incremental updates. Analyzes project structure, tech stack, core modules, APIs, databases, and auto-generates SKILL.md and references documents following skill-creator spec. Supports Java/Spring Boot/Node.js/Python/Go/Rust projects. Usage: provide a local project path or remote repository URL. Updates detect git changes and only rewrite affected documents.
+description: "Convert local code repositories or remote GitHub/GitLab/Gitee repositories into Claude Code Skills with git diff based incremental updates. Analyzes project structure, tech stack, core modules, APIs, databases, and auto-generates SKILL.md and references documents following skill-creator spec. Supports Java/Spring Boot/Node.js/Python/Go/Rust projects. Provide a local project path or remote repository URL. Updates detect git changes and only rewrite affected documents."
 ---
 
 # repo2skill - Repository to Skill Generator
