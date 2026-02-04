@@ -1,13 +1,13 @@
-# 项目分析指南
+# Project Analysis Guide
 
-## 通用分析步骤
+## General Analysis Steps
 
-### 1. 识别技术栈
+### 1. Identify Tech Stack
 
-按优先级检查以下文件：
+Check the following files by priority:
 
-| 标志文件 | 技术栈 |
-|----------|--------|
+| Marker File | Tech Stack |
+|-------------|------------|
 | `pom.xml` | Java + Maven |
 | `build.gradle` / `build.gradle.kts` | Java/Kotlin + Gradle |
 | `package.json` | Node.js/TypeScript |
@@ -26,26 +26,26 @@ Glob "**/go.mod"
 Glob "**/Cargo.toml"
 ```
 
-读取找到的构建文件，提取：
-- 语言版本
-- 框架和版本（Spring Boot、Express、Django 等）
-- 关键依赖列表
+Read found build files and extract:
+- Language version
+- Framework and version (Spring Boot, Express, Django, etc.)
+- Key dependency list
 
-### 2. 分析目录结构
+### 2. Analyze Directory Structure
 
 ```bash
-# 获取顶层目录
+# Get top-level directory
 ls -la {project-root}
 
-# 获取 src 目录结构（限制深度）
+# Get src directory structure (limited depth)
 find {project-root}/src -type d -maxdepth 4 2>/dev/null | head -50
 ```
 
-### 3. 识别核心文件
+### 3. Identify Core Files
 
-按文件角色分类查找：
+Search by file role:
 
-#### API 层
+#### API Layer
 ```
 Glob "**/controller/**/*.java"
 Glob "**/controllers/**/*.{ts,js}"
@@ -55,7 +55,7 @@ Glob "**/*Provider.java"
 Glob "**/*Handler.{go,java}"
 ```
 
-#### 业务层
+#### Business Layer
 ```
 Glob "**/service/**/*.java"
 Glob "**/services/**/*.{ts,js,py}"
@@ -63,7 +63,7 @@ Glob "**/usecases/**/*"
 Glob "**/domain/**/*"
 ```
 
-#### 数据层
+#### Data Layer
 ```
 Glob "**/entity/**/*.java"
 Glob "**/model/**/*.{java,ts,py}"
@@ -74,7 +74,7 @@ Glob "**/dao/**/*.java"
 Glob "**/schema/**/*"
 ```
 
-#### 配置
+#### Configuration
 ```
 Glob "**/config/**/*"
 Glob "**/configuration/**/*"
@@ -84,29 +84,29 @@ Glob "**/*.toml"
 Glob "**/.env.example"
 ```
 
-### 4. 分析 API
+### 4. Analyze APIs
 
-对每个 API 入口文件执行 Read，提取：
-- 路由/端点路径
-- HTTP 方法
-- 请求参数（路径参数、查询参数、请求体）
-- 响应结构
-- 认证要求
-- 调用的 Service 方法
+Read each API entry file and extract:
+- Route/endpoint paths
+- HTTP methods
+- Request parameters (path params, query params, request body)
+- Response structure
+- Authentication requirements
+- Called Service methods
 
-### 5. 分析数据模型
+### 5. Analyze Data Models
 
-读取 Entity/Model 文件，提取：
-- 表名/集合名
-- 字段名、类型、约束
-- 关联关系
-- 索引定义
+Read Entity/Model files and extract:
+- Table/collection names
+- Field names, types, constraints
+- Relationships
+- Index definitions
 
-对 Java 项目，同时检查 Mapper XML 确认字段映射。
+For Java projects, also check Mapper XML to confirm field mappings.
 
-**数据来源优先级**: Entity 类 > Mapper XML > DDL 文件
+**Data source priority**: Entity classes > Mapper XML > DDL files
 
-### 6. 提取枚举和常量
+### 6. Extract Enums and Constants
 
 ```
 Glob "**/enum/**/*.java"
@@ -117,38 +117,38 @@ Grep "export enum" --glob "*.ts"
 Grep "class.*Enum" --glob "*.py"
 ```
 
-### 7. 分析构建和开发流程
+### 7. Analyze Build and Development Workflow
 
-读取以下文件获取开发信息：
+Read the following files for development info:
 - `Makefile` / `Taskfile.yml`
 - `docker-compose.yml`
 - `.github/workflows/*.yml`
-- `scripts/` 目录
-- `README.md`（开发相关章节）
+- `scripts/` directory
+- `README.md` (development-related sections)
 
 ---
 
-## 技术栈特定模式
+## Tech Stack Specific Patterns
 
 ### Java + Spring Boot
 
 ```
-# 启动类
+# Entry class
 Grep "@SpringBootApplication" --glob "*.java"
 
-# REST 控制器
+# REST controllers
 Grep "@RestController" --glob "*.java"
 Grep "@RequestMapping" --glob "*.java"
 
-# 服务
+# Services
 Grep "@Service" --glob "*.java"
 
-# 数据访问
+# Data access
 Grep "@Repository" --glob "*.java"
 Grep "@Entity" --glob "*.java"
 Grep "@Table" --glob "*.java"
 
-# 配置
+# Configuration
 Glob "**/application*.yml"
 Glob "**/application*.properties"
 ```
@@ -156,9 +156,9 @@ Glob "**/application*.properties"
 ### Node.js / TypeScript
 
 ```
-Glob "**/index.ts"                              # 入口
+Glob "**/index.ts"                              # Entry
 Glob "**/app.ts"
-Grep "router\." --glob "*.ts"                   # 路由
+Grep "router\." --glob "*.ts"                   # Routes
 Grep "app\.(get|post|put|delete)" --glob "*.ts"
 Grep "Schema\(" --glob "*.ts"                   # ORM
 Grep "@Entity" --glob "*.ts"
@@ -167,9 +167,9 @@ Grep "@Entity" --glob "*.ts"
 ### Python (Django/FastAPI/Flask)
 
 ```
-Glob "**/urls.py"                               # Django 路由
-Glob "**/views.py"                              # Django 视图
-Glob "**/models.py"                             # 模型
+Glob "**/urls.py"                               # Django routes
+Glob "**/views.py"                              # Django views
+Glob "**/models.py"                             # Models
 Grep "@app\.(get|post|put|delete)" --glob "*.py" # FastAPI
 Grep "@app\.route" --glob "*.py"                # Flask
 ```
@@ -177,7 +177,7 @@ Grep "@app\.route" --glob "*.py"                # Flask
 ### Go
 
 ```
-Glob "**/main.go"                               # 入口
-Grep "func.*Handler" --glob "*.go"              # 路由
-Grep "type.*struct" --glob "*.go"               # 模型
+Glob "**/main.go"                               # Entry
+Grep "func.*Handler" --glob "*.go"              # Routes
+Grep "type.*struct" --glob "*.go"               # Models
 ```

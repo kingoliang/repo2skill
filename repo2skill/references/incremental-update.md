@@ -1,8 +1,8 @@
-# 增量更新指南
+# Incremental Update Guide
 
-## .metadata 文件格式
+## .metadata File Format
 
-首次生成 skill 时，在 skill 目录下创建 `.metadata` 文件：
+On first skill generation, create a `.metadata` file in the skill directory:
 
 ```json
 {
@@ -24,7 +24,7 @@
 }
 ```
 
-远程仓库额外字段：
+Additional fields for remote repositories:
 ```json
 {
   "source_type": "remote",
@@ -36,40 +36,40 @@
 
 ---
 
-## 增量更新流程
+## Incremental Update Flow
 
-### 1. 读取 .metadata
+### 1. Read .metadata
 
 ```bash
 Read {skill-dir}/.metadata
 ```
 
-如果 `.metadata` 不存在 → 提示用户该 skill 不支持增量更新，建议全量重新生成。
+If `.metadata` does not exist → Inform user this skill does not support incremental update, suggest full regeneration.
 
-### 2. 检查项目状态
+### 2. Check Project State
 
 ```bash
 cd {source_path}
-git rev-parse HEAD              # 当前 commit
-git rev-parse {last_commit}     # 验证旧 commit 是否还在历史中
+git rev-parse HEAD              # Current commit
+git rev-parse {last_commit}     # Verify old commit is still in history
 ```
 
-如果旧 commit 不在历史中（例如 rebase/force push）→ 回退到全量重新生成。
+If old commit is not in history (e.g., rebase/force push) → Fall back to full regeneration.
 
-### 3. 获取变更文件列表
+### 3. Get Changed File List
 
 ```bash
 git diff --name-only {last_commit}..HEAD
 ```
 
-如果无变更 → 告知用户 skill 已是最新，无需更新。
+If no changes → Inform user skill is up to date, no update needed.
 
-### 4. 分类变更文件
+### 4. Classify Changed Files
 
-对 diff 输出的每个文件路径，按以下规则分类：
+For each file path in the diff output, classify by the following rules:
 
-| 变更文件匹配模式 | 需要更新的文档 |
-|------------------|----------------|
+| Changed File Pattern | Document to Update |
+|---------------------|--------------------|
 | `**/controller/**`, `**/routes/**`, `**/views/**`, `**/*Provider.*`, `**/*Handler.*` | API_REFERENCE.md |
 | `**/entity/**`, `**/model/**`, `**/models/**`, `**/schema/**`, `**/*DO.*`, `**/*Mapper.xml` | DATA_MODEL.md |
 | `**/service/**`, `**/services/**`, `**/domain/**`, `**/usecases/**` | ARCHITECTURE.md, DOMAIN_GUIDE.md |
@@ -79,25 +79,25 @@ git diff --name-only {last_commit}..HEAD
 | `Makefile`, `Dockerfile`, `docker-compose.*`, `.github/workflows/**` | DEVELOPMENT.md |
 | `README.md`, `CONTRIBUTING.md` | DEVELOPMENT.md |
 
-#### 特殊情况
+#### Special Cases
 
-- **新增/删除目录** → 额外更新 SKILL.md 的模块结构表
-- **构建文件变更** (pom.xml/package.json) → 额外检查是否有新增依赖影响技术栈描述
-- **大量文件变更** (>30个文件) → 建议全量重新生成，因为增量更新可能遗漏关联变化
+- **Added/deleted directories** → Also update the module structure table in SKILL.md
+- **Build file changes** (pom.xml/package.json) → Also check if new dependencies affect tech stack description
+- **Large number of changes** (>30 files) → Recommend full regeneration, as incremental update may miss correlated changes
 
-### 5. 重新分析受影响的代码
+### 5. Re-analyze Affected Code
 
-仅读取变更文件和相关文件（同模块/同目录），重新提取信息。
+Only read changed files and related files (same module/directory), re-extract information.
 
-对于删除的文件：从对应文档中移除相关条目。
-对于新增的文件：在对应文档中添加新条目。
-对于修改的文件：重新分析并替换对应文档中的条目。
+For deleted files: Remove corresponding entries from the document.
+For added files: Add new entries to the corresponding document.
+For modified files: Re-analyze and replace corresponding entries in the document.
 
-### 6. 重写受影响的文档
+### 6. Rewrite Affected Documents
 
-仅重写步骤 4 中标记需要更新的文档，其余文档保持不变。
+Only rewrite documents marked in step 4; leave remaining documents unchanged.
 
-### 7. 更新 .metadata
+### 7. Update .metadata
 
 ```json
 {
@@ -110,52 +110,52 @@ git diff --name-only {last_commit}..HEAD
 
 ---
 
-## 远程仓库增量更新
+## Remote Repository Incremental Update
 
-远程仓库无法直接 git diff，使用以下替代方案：
+Remote repositories cannot use git diff directly; use the following alternative:
 
-1. 通过 API 获取 compare 接口：
+1. Fetch via the compare API:
    ```bash
    # GitHub
    curl -s "https://api.github.com/repos/{owner}/{repo}/compare/{last_commit}...HEAD"
    ```
-2. 从 response 的 `files` 数组提取变更文件列表
-3. 后续流程与本地相同
+2. Extract changed file list from the `files` array in the response
+3. Subsequent flow is the same as local
 
-如果 compare API 失败（commit 太旧、仓库 rebase 等）→ 回退到全量重新生成。
-
----
-
-## 回退到全量重新生成的条件
-
-满足以下任一条件时，自动切换为全量重新生成：
-
-1. `.metadata` 文件不存在
-2. 旧 commit hash 不在 git 历史中
-3. 变更文件数 >30
-4. 构建文件变更导致技术栈发生根本变化（如从 Maven 切到 Gradle）
-5. 用户明确要求（"重新生成"、"全量更新"、"--force"）
-
-回退时告知用户原因：
-```
-检测到 XX 个文件变更（超过阈值 30），将执行全量重新生成以确保完整性。
-```
+If compare API fails (commit too old, repo rebased, etc.) → Fall back to full regeneration.
 
 ---
 
-## 更新摘要格式
+## Conditions for Falling Back to Full Regeneration
+
+Automatically switch to full regeneration when any of the following conditions are met:
+
+1. `.metadata` file does not exist
+2. Old commit hash is not in git history
+3. Changed file count >30
+4. Build file changes cause fundamental tech stack change (e.g., Maven to Gradle)
+5. User explicitly requests ("regenerate", "full update", "--force")
+
+Inform user of the reason when falling back:
+```
+Detected XX file changes (exceeds threshold of 30), performing full regeneration to ensure completeness.
+```
+
+---
+
+## Update Summary Format
 
 ```
-Skill 增量更新完成
+Skill incremental update complete
 
-项目: {source_path}
-变更范围: {last_commit_short}..{new_commit_short} ({N} 个 commit)
+Project: {source_path}
+Change range: {last_commit_short}..{new_commit_short} ({N} commits)
 
-变更文件: {M} 个
-更新的文档:
-  ~ references/API_REFERENCE.md  (新增 2 个 API, 修改 1 个)
-  ~ references/DATA_MODEL.md     (修改 1 个模型)
-  - 其余文档无变化
+Changed files: {M}
+Updated documents:
+  ~ references/API_REFERENCE.md  (added 2 APIs, modified 1)
+  ~ references/DATA_MODEL.md     (modified 1 model)
+  - Remaining documents unchanged
 
-.metadata 已更新: commit {new_commit_short}
+.metadata updated: commit {new_commit_short}
 ```

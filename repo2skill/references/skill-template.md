@@ -1,105 +1,105 @@
-# Skill 文档生成模板
+# Skill Document Generation Templates
 
-## SKILL.md 模板
+## SKILL.md Template
 
-SKILL.md 必须 <200 行。使用祈使句/动词优先风格。
+SKILL.md must be <200 lines. Use imperative/verb-first style.
 
 ```markdown
 ---
 name: {skill-name}
-description: {丰富的描述，包含使用场景和触发关键词，80-150字}
+description: {Rich description with use cases and trigger keywords, 80-150 words}
 ---
 
-# {项目名} 开发指南
+# {Project Name} Development Guide
 
-## 项目概览
+## Project Overview
 
-| 属性 | 值 |
-|------|-----|
-| **项目类型** | {类型} |
-| **技术栈** | {语言} + {框架} + {关键库} |
-| **基础包/入口** | `{base-package-or-entry}` |
+| Property | Value |
+|----------|-------|
+| **Project Type** | {type} |
+| **Tech Stack** | {language} + {framework} + {key-libs} |
+| **Base Package/Entry** | `{base-package-or-entry}` |
 
-## 模块结构
+## Module Structure
 
-| 模块 | 路径 | 说明 |
-|------|------|------|
-| {模块1} | `{path-pattern}` | {说明} |
-| {模块2} | `{path-pattern}` | {说明} |
+| Module | Path | Description |
+|--------|------|-------------|
+| {module1} | `{path-pattern}` | {description} |
+| {module2} | `{path-pattern}` | {description} |
 
-## 按功能搜索
+## Search by Feature
 
-| 功能 | 搜索命令 | 说明 |
-|------|----------|------|
-| {功能1} | `Glob "{pattern}"` | {说明} |
-| {功能2} | `Grep "{keyword}" --glob "{pattern}"` | {说明} |
+| Feature | Search Command | Description |
+|---------|---------------|-------------|
+| {feature1} | `Glob "{pattern}"` | {description} |
+| {feature2} | `Grep "{keyword}" --glob "{pattern}"` | {description} |
 
-## 核心入口文件
+## Core Entry Files
 
-| 文件 | 路径 | 说明 |
-|------|------|------|
-| {文件1} | `{path}` | {说明} |
+| File | Path | Description |
+|------|------|-------------|
+| {file1} | `{path}` | {description} |
 
-## 详细文档
+## Detailed Documentation
 
-| 需要了解 | 参考文档 |
-|----------|----------|
-| 项目结构和依赖 | [PROJECT_INDEX.md](references/PROJECT_INDEX.md) |
-| 架构设计和分层 | [ARCHITECTURE.md](references/ARCHITECTURE.md) |
-| API 接口详情 | [API_REFERENCE.md](references/API_REFERENCE.md) |
-| 数据模型/表结构 | [DATA_MODEL.md](references/DATA_MODEL.md) |
-| 业务领域概念 | [DOMAIN_GUIDE.md](references/DOMAIN_GUIDE.md) |
-| 开发、构建、测试 | [DEVELOPMENT.md](references/DEVELOPMENT.md) |
+| Need to Know | Reference Document |
+|--------------|--------------------|
+| Project structure and dependencies | [PROJECT_INDEX.md](references/PROJECT_INDEX.md) |
+| Architecture design and layering | [ARCHITECTURE.md](references/ARCHITECTURE.md) |
+| API interface details | [API_REFERENCE.md](references/API_REFERENCE.md) |
+| Data models/table structures | [DATA_MODEL.md](references/DATA_MODEL.md) |
+| Business domain concepts | [DOMAIN_GUIDE.md](references/DOMAIN_GUIDE.md) |
+| Development, build, testing | [DEVELOPMENT.md](references/DEVELOPMENT.md) |
 
-## 常用命令
+## Common Commands
 
 ```bash
-# 安装依赖
+# Install dependencies
 {install-command}
 
-# 启动开发
+# Start development
 {dev-command}
 
-# 运行测试
+# Run tests
 {test-command}
 
-# 构建
+# Build
 {build-command}
 ```
 ```
 
 ---
 
-## References 文档模板
+## References Document Templates
 
 ### PROJECT_INDEX.md
 
-包含: 基本信息表(项目名/版本/语言/框架) → 目录结构(深度3-4层) → 核心依赖表(依赖/版本/用途) → 开发依赖表。每节标注 `> 数据来源: {file}`。
+Contains: Basic info table (name/version/language/framework) → Directory structure (depth 3-4) → Core dependencies table (dependency/version/purpose) → Dev dependencies table. Each section annotated with `> Data source: {file}`.
 
 ### ARCHITECTURE.md
 
-包含: 分层架构图(API→Service→Repository→DB) → 模块依赖关系 → 核心组件表(组件/位置/职责)。
+Contains: Layered architecture diagram (API→Service→Repository→DB) → Module dependency relationships → Core components table (component/location/responsibility).
 
 ### API_REFERENCE.md
 
-包含: API 索引表(方法/路径/说明/认证) → 每个 API 详情块:
-- 基本信息(文件路径)
-- 请求参数表(字段/类型/必填/说明)
-- 响应参数表(字段/类型/说明)
-- 调用链(Controller→Service→Repository)
+Contains: API index table (method/path/description/auth) → Each API detail block:
+- Basic info (file path)
+- Request parameters table (field/type/required/description)
+- Response parameters table (field/type/description)
+- Call chain (Controller→Service→Repository)
 
-Java 项目: 从 `@NotBlank`/`@NotNull` 注解判断必填。
+Java projects: Determine required fields from `@NotBlank`/`@NotNull` annotations.
 
 ### DATA_MODEL.md
 
-包含: 模型列表表(模型/文件/对应表) → 每个模型详情:
-- 字段表(字段/类型/约束/说明)
-- 关联关系
+Contains: Model list table (model/file/corresponding table) → Each model detail:
+- Field table (field/type/constraints/description)
+- Relationships
 
 ### DOMAIN_GUIDE.md
 
-包含: 核心概念表 → 业务流程(步骤图) → 术语表(术语/含义)。
+Contains: Core concepts table → Business processes (step diagrams) → Glossary (term/meaning).
 
 ### DEVELOPMENT.md
 
-包含: 环境要求表(工具/版本) → 快速开始命令 → 构建命令表 → 测试命令 → 配置说明表(配置项/说明/默认值) → 部署信息。
+Contains: Environment requirements table (tool/version) → Quick start commands → Build commands table → Test commands → Configuration table (config/description/default) → Deployment info.
